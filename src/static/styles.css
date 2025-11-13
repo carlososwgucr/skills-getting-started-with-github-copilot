@@ -89,6 +89,12 @@ section h3 {
   margin: 0;
 }
 
+/* Ensure no bullets and no extra left padding in any browser */
+.participants-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 .participants-list li {
   display: flex;
   align-items: center;
@@ -115,6 +121,25 @@ section h3 {
 
 .delete-btn:hover {
   background: rgba(198,40,40,0.08);
+}
+
+/* Small SVG inside the button should inherit color and be aligned */
+.delete-btn svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 14px;
+  height: 14px;
+  color: #c62828;
+}
+
+/* Screen-reader-only helper */
+.sr-only {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+  border: 0; padding: 0; margin: -1px;
 }
 .avatar {
   width: 34px;

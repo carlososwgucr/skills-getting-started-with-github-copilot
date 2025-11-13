@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
           participantsHtml += `<h5 class="participants-title">Participants</h5><ul class="participants-list">`;
           details.participants.forEach((p) => {
             const initial = escapeHtml((p && p.charAt(0)) || "");
-            participantsHtml += `<li><span class="avatar">${initial.toUpperCase()}</span><span class="participant-name">${escapeHtml(p)}</span><button class="delete-btn" data-activity="${escapeHtml(name)}" data-email="${escapeHtml(p)}" aria-label="Remove participant">✖</button></li>`;
+            // Use an inline SVG for the delete icon (accessible) instead of a plain character
+            const deleteSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            participantsHtml += `<li><span class="avatar">${initial.toUpperCase()}</span><span class="participant-name">${escapeHtml(p)}</span><button class="delete-btn" data-activity="${escapeHtml(name)}" data-email="${escapeHtml(p)}" aria-label="Remove participant">${deleteSvg}<span class="sr-only">Remove participant</span></button></li>`;
           });
           participantsHtml += `</ul>`;
         } else {
@@ -87,11 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         messageDiv.textContent = result.message;
-        messageDiv.className = "success";
+        messageDiv.className = "message success";
         signupForm.reset();
+        // Refresh activities list so the new participant appears immediately
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
-        messageDiv.className = "error";
+        messageDiv.className = "message error";
       }
 
       messageDiv.classList.remove("hidden");
@@ -102,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 5000);
     } catch (error) {
       messageDiv.textContent = "Failed to sign up. Please try again.";
-      messageDiv.className = "error";
+      messageDiv.className = "message error";
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
     }
@@ -123,13 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         if (response.ok) {
           messageDiv.textContent = result.message;
-          messageDiv.className = "success";
+          messageDiv.className = "message success";
           messageDiv.classList.remove("hidden");
           // Refresh activities list
           fetchActivities();
         } else {
           messageDiv.textContent = result.detail || "Failed to remove participant";
-          messageDiv.className = "error";
+          messageDiv.className = "message error";
           messageDiv.classList.remove("hidden");
         }
 
@@ -138,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
       } catch (error) {
         messageDiv.textContent = "Failed to remove participant";
-        messageDiv.className = "error";
+        messageDiv.className = "message error";
         messageDiv.classList.remove("hidden");
         console.error("Error removing participant:", error);
       }
